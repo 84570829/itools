@@ -3,7 +3,7 @@ package itoken
 import (
 	"encoding/json"
 	"errors"
-	"golang.org/x/oauth2/jwt"
+	"github.com/dgrijalva/jwt-go"
 	"time"
 )
 
