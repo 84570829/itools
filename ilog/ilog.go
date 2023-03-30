@@ -10,10 +10,20 @@ var (
 	Logger *zap.SugaredLogger
 )
 
+const (
+	DebugLevel  zapcore.Level = zapcore.DebugLevel
+	InfoLevel   zapcore.Level = zapcore.InfoLevel
+	WarnLevel   zapcore.Level = zapcore.WarnLevel
+	ErrorLevel  zapcore.Level = zapcore.ErrorLevel
+	DPanicLevel zapcore.Level = zapcore.DPanicLevel
+	PanicLevel  zapcore.Level = zapcore.PanicLevel
+	FatalLevel  zapcore.Level = zapcore.FatalLevel
+)
+
 // Init 初始化zap
 // @param jsonFormat 是否使用json格式化输出
 // @param logFile 日志输出到文本路径，为空则输出到终端
-func Init(jsonFormat bool, logFile string) {
+func Init(jsonFormat bool, level zapcore.Level, logFile string) {
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
@@ -48,7 +58,7 @@ func Init(jsonFormat bool, logFile string) {
 	zapCore := zapcore.NewCore(
 		encoder,
 		writer,
-		zapcore.DebugLevel,
+		level,
 	)
 	logger := zap.New(zapCore, zap.AddCaller())
 	Logger = logger.Sugar()
