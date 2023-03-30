@@ -25,12 +25,12 @@ const (
 // @param logFile 日志输出到文本路径，为空则输出到终端
 func Init(jsonFormat bool, level zapcore.Level, logFile string) {
 	encoderConfig := zapcore.EncoderConfig{
-		TimeKey:        "time",
-		LevelKey:       "level",
-		NameKey:        "name",
-		CallerKey:      "line",
-		MessageKey:     "msg",
-		FunctionKey:    "func",
+		TimeKey:    "time",
+		LevelKey:   "level",
+		NameKey:    "name",
+		CallerKey:  "line",
+		MessageKey: "msg",
+		//FunctionKey:    "func",
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.LowercaseLevelEncoder,
