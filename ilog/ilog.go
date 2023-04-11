@@ -40,6 +40,10 @@ func Init(jsonFormat bool, level zapcore.Level, logFile string) {
 		EncodeName:     zapcore.FullNameEncoder,
 	}
 
+	if level != DebugLevel {
+		encoderConfig.CallerKey = ""
+	}
+
 	var encoder zapcore.Encoder
 	var writer zapcore.WriteSyncer
 
