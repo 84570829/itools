@@ -1,15 +1,7 @@
 package ifile
 
 import (
-	"bytes"
-	"fmt"
 	"os"
-	"os/exec"
-	"path"
-	"strconv"
-	"strings"
-	"syscall"
-	"time"
 )
 
 // 调用os.MkdirAll递归创建文件夹
@@ -25,21 +17,6 @@ func MakeDir(filePath string, perm ...os.FileMode) error {
 		return err
 	}
 	return nil
-}
-
-// 延迟建立文件件，防止建立过快监听未跟上
-func MkDirSleep(dirPath string, sleep time.Duration) {
-	paths := ""
-	arr := strings.Split(dirPath, "/")
-	for _, v := range arr {
-		if v != "" {
-			paths += "/" + v
-			if !IsExist(paths) {
-				_ = os.Mkdir(paths, os.ModePerm)
-				time.Sleep(sleep)
-			}
-		}
-	}
 }
 
 // 判断所给路径文件/文件夹是否存在(返回true是存在)
@@ -80,53 +57,4 @@ func FileStat(path string) os.FileInfo {
 	} else {
 		return nil
 	}
-}
-
-// GetOnlyName 获取唯一名字
-func GetOnlyName(fsPath string) string {
-	var n int
-	paths, name := path.Split(fsPath)
-	ext := path.Ext(name)
-	pre := strings.TrimSuffix(name, ext)
-BACK:
-	if !IsExist(paths + name) {
-		return paths + name
-	}
-	n++
-	name = fmt.Sprintf("%s-%d%s", pre, n, ext)
-	goto BACK
-}
-
-// 文件信息
-type Fi struct {
-	Ino   int64
-	Name  string
-	Size  int64
-	IsDir bool
-}
-
-// GetInode 读取文件信息
-func GetInode(paths string) (*Fi, error) {
-	fi, err := os.Stat(paths)
-	if err != nil {
-		return nil, err
-	}
-	item := &Fi{
-		Ino:   int64(fi.Sys().(*syscall.Stat_t).Ino),
-		Name:  fi.Name(),
-		Size:  fi.Size(),
-		IsDir: fi.IsDir(),
-	}
-	return item, nil
-}
-
-// DirSubTotal 读取文件夹子项数量
-func DirSubTotal(paths string) (int, error) {
-	sub, err := exec.Command("/bin/bash", "-c", fmt.Sprintf("ls '%s' | wc -l", paths)).Output()
-	if err != nil {
-		return 0, err
-	}
-	src := string(bytes.Trim(bytes.TrimSpace(sub), "\n"))
-	total, _ := strconv.Atoi(src)
-	return total, nil
 }
